@@ -1,0 +1,15 @@
+sudo: required
+services:
+  - docker
+
+before_install:
+  - docker build -t shrempf/react-test -f Dockerfile.dev ./client
+
+script:
+  - docker run -e CI=true shrempf/react-test npm test
+
+after_success:
+  - docker build -t shrempf/multi-client ./client
+  - docker build -t shrempf/multi-nginx ./nginx
+  - docker build -t shrempf/multi-server ./server
+  - docker build -t shrempf/multi-worker ./worker
